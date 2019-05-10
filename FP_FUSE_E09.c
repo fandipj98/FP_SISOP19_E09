@@ -15,6 +15,8 @@
 
 static const char *dirpath = "/home/fandipj/musictemp";
 pthread_t tid;
+char musiclist[1005][1005];
+int counter;
 
 static int xmp_getattr(const char *path, struct stat *stbuf)
 {
@@ -117,14 +119,44 @@ void listdir(const char *name)
         } else {
             int sz = strlen(entry->d_name);
             if(sz > 4 && entry->d_name[sz - 1] == '3' && entry->d_name[sz - 2] == 'p' && entry->d_name[sz - 3] == 'm' && entry->d_name[sz - 4] == '.'){
-                //printf("%s %s\n", name, entry->d_name);
-                char command[1005], pathasal[1005];
+                printf("%s %s\n", name, entry->d_name);
+                char command[1005], pathasal[1005], namafile[1005], pathtujuan[1005];
+                int jumlah = 0;
+                if(counter>0){
+                    for(int i=0; i<counter; i++){
+                        if(strcmp(musiclist[i], entry->d_name)==0){
+                            jumlah++;
+                        }
+                    }
+                }            
                 
+                strcpy(musiclist[counter], entry->d_name);
+                //printf("LIST: %s\n",musiclist[counter]);
+                counter++;
+                
+                if(jumlah>0){
+                    char nama[1005],temp[1005];
+                    strcpy(temp, entry->d_name);
+                    char* pos = strtok(temp, ".");  
+                    strcpy(nama, pos);
+                    
+                    sprintf(namafile, "%s_%d.mp3", nama, jumlah);
+                }
+                else{
+                    strcpy(namafile,entry->d_name);
+                }
+
                 strcpy(pathasal,name);
                 strcat(pathasal,"/");
                 strcat(pathasal,entry->d_name);
 
-                sprintf(command, "cp '%s' '%s'", pathasal, dirpath);
+                strcpy(pathtujuan, dirpath);
+                strcat(pathtujuan,"/");
+                strcat(pathtujuan,namafile);
+
+                //printf("COMMAND: %s\n",command);
+
+                sprintf(command, "cp '%s' '%s'", pathasal, pathtujuan);
 
                 system(command);
             }
@@ -135,7 +167,8 @@ void listdir(const char *name)
 
 void* joinMusic(){
 	char dirhome[1005] = "/home/fandipj";
-	
+	memset(musiclist,0,sizeof(musiclist));
+	counter = 0;
 	listdir(dirhome);
  	return NULL;
 }
