@@ -8,8 +8,180 @@ Buatlah sebuah music player dengan bahasa C yang memiliki fitur play nama_lagu, 
 Note: playlist bisa banyak, link mp3player
 
 ### Jawaban:
+#### FUSE
+Pertama - tama kita perlu membuat fungsi `xmp_init()`yaitu fungsi yang dijalankan sebelum fuse di mount. Dalam fungsi `xmp_init()`, kita membuat folder `musictemp` sebagai folder temporary yang nanti nya program FUSE akan di mount ke folder temporary tersebut yang letaknya di `/home/user/musictemp`. Kemudian dalam fungsi `xmp_init()` kita perlu membuat thread dengan fungsi `joinMusic()` untuk mengumpulkan semua jenis file yang berekstensi .mp3 kedalam folder `musictemp` yang tersebar pada direktori `/home/user`. Syntaxnya adalah seperti berikut ini:
+```
+#define FUSE_USE_VERSION 28
+#include <fuse.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <errno.h>
+#include <sys/time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <pthread.h>
+
+static const char *dirpath = "/home/fandipj/musictemp";
+pthread_t tid;
+
+static void* xmp_init(struct fuse_conn_info *conn)
+{
+	int status;
+	struct stat sb;
+	if(stat(dirpath, &sb)==0 && S_ISDIR(sb.st_mode)){
+      
+    }
+    else{
+        mkdir(dirpath, 0750);
+    }
+
+	pthread_create(&tid,NULL,&joinMusic,NULL);
+	
+	while((wait(&status))>0);
+
+	return NULL;
+}
+
+static struct fuse_operations xmp_oper = {
+	.init		= xmp_init,
+	.destroy	= xmp_destroy,
+	.getattr	= xmp_getattr,
+	.readdir	= xmp_readdir,
+	.read		= xmp_read,
+};
+```
+Kemudian dalam fungsi thread `joinMusic()`, kita memanggil fungsi `listdir()` dengan parameter path `/home/fandipj`. Pada fungsi `listdir()`, kita membaca semua file dan subdirectory dari path yang dipassing dengan fungsi c `opendir()` dan `readdir()`. Jika yang terbaca adalah subfolder, maka akan memanggil fungsi `listdir()` lagi secara rekursi dengan parameter path `path folder/subfolder`. Jika yang terbaca adalah file dan berekstensi .mp3, maka nama filenya akan disimpan kedalam array of string `musiclist`, namun sebelumnya perlu dicek terlebih dahulu apakah nama file .mp3 tersebut sama dengan salah satu file .mp3 yang sudah pernah terbaca dan tersimpan dalam array of string `musiclist`, jika nama filenya sudah pernah ada, maka file tersebut nanti nya sebelum dicopy ke folder `musictemp` yang ada di `/home/user/musictemp`, akan di rename terlebih dahulu dengan format `namafile_jumlahfilekembar.mp3`. Jika nama filenya belum pernah ada, maka file tersebut langsung dicopy ke folder `musictemp` yang ada di `/home/user/musictemp`. Cara copy file .mp3 tersebut menggunakan fungsi `system()` dengan perintah `cp 'path asal' 'path tujuan'`. Thread akan memanggil fungsi `listdir()` tersebut secara rekursi sampai semua file dan subfolder yang berada di `/home/user` sudah terbaca semua. Syntaxnya adalah seperti berikut ini:
+```
+char musiclist[1005][1005];
+int counter;
+
+void listdir(const char *name)
+{
+    if(strcmp(name, dirpath) == 0)
+        return;
+
+    DIR *dir;
+    struct dirent *entry;
+
+    if (!(dir = opendir(name)))
+        return;
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_DIR) {
+            char path[1024];
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                continue;
+            snprintf(path, sizeof(path), "%s/%s", name, entry->d_name);
+            //printf("%s [%s]\n", path, entry->d_name);
+            listdir(path);
+        } else {
+            int sz = strlen(entry->d_name);
+            if(sz > 4 && entry->d_name[sz - 1] == '3' && entry->d_name[sz - 2] == 'p' && entry->d_name[sz - 3] == 'm' && entry->d_name[sz - 4] == '.'){
+                printf("%s %s\n", name, entry->d_name);
+                char command[1005], pathasal[1005], namafile[1005], pathtujuan[1005];
+                int jumlah = 0;
+                if(counter>0){
+                    for(int i=0; i<counter; i++){
+                        if(strcmp(musiclist[i], entry->d_name)==0){
+                            jumlah++;
+                        }
+                    }
+                }            
+                
+                strcpy(musiclist[counter], entry->d_name);
+                //printf("LIST: %s\n",musiclist[counter]);
+                counter++;
+                
+                if(jumlah>0){
+                    char nama[1005],temp[1005];
+                    strcpy(temp, entry->d_name);
+                    char* pos = strtok(temp, ".");  
+                    strcpy(nama, pos);
+                    
+                    sprintf(namafile, "%s_%d.mp3", nama, jumlah);
+                }
+                else{
+                    strcpy(namafile,entry->d_name);
+                }
+
+                strcpy(pathasal,name);
+                strcat(pathasal,"/");
+                strcat(pathasal,entry->d_name);
+
+                strcpy(pathtujuan, dirpath);
+                strcat(pathtujuan,"/");
+                strcat(pathtujuan,namafile);
+
+                //printf("COMMAND: %s\n",command);
+
+                sprintf(command, "cp '%s' '%s'", pathasal, pathtujuan);
+
+                system(command);
+            }
+        }
+    }
+    closedir(dir);
+}
+
+void* joinMusic(){
+	char dirhome[1005] = "/home/fandipj";
+	memset(musiclist,0,sizeof(musiclist));
+	counter = 0;
+	listdir(dirhome);
+ 	return NULL;
+}
+```
+Kemudian sebelum program di unmount, maka program akan menjalankan fungsi `xmp_destroy()` yang berisi perintah untuk membaca semua file yang ada didalam folder `musictemp` dengan menggunakan fungsi c `opendir()` dan `readdir()`. Kemudian semua file yang berada didalam folder yang dimount tersebut didelete dengan menggunakan fungsi c `remove()`. Setelah semua file dalam folder tersebut dihapus, maka folder `musictemp` yang merupakan folder temporary dan folder yang dimount tersebut akan dihapus dengan fungsi c `remove()`. Syntaxnya adalah seperti berikut ini:
+```
+#define FUSE_USE_VERSION 28
+#include <fuse.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <errno.h>
+#include <sys/time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <pthread.h>
+
+static const char *dirpath = "/home/fandipj/musictemp";
+
+void xmp_destroy(void* privateData)
+{
+	char filePath[1005];
+
+ 	DIR *dirMusic;
+	struct dirent *de;
+	dirMusic = opendir(dirpath);
+
+ 	while((de = readdir(dirMusic)) != NULL){
+		if (de->d_type == DT_REG) {
+			sprintf(filePath, "%s/%s", dirpath, de->d_name);
+			remove(filePath);
+		}
+	}
+	remove(dirpath);
+}
+
+static struct fuse_operations xmp_oper = {
+	.init		= xmp_init,
+	.destroy	= xmp_destroy,
+	.getattr	= xmp_getattr,
+	.readdir	= xmp_readdir,
+	.read		= xmp_read,
+};
+```
 #### Mp3 Player
-Pertama - tama buat thread untuk mp3 playernya yang mengarah ke folder FUSE. berikut syntaxnya:
+Pertama - tama buat thread untuk mp3 playernya yang mengarah ke mount point FUSE. berikut syntaxnya:
 ```
 #include <ao/ao.h>
 #include <mpg123.h>
@@ -178,7 +350,7 @@ else if (strcmp(inp, "help") == 0) {
     printf("------------------------\n");
 }
 ```
-3. Fungsi untuk play music yang dipilih
+3. Fungsi untuk play music yang dipilih. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "play") == 0) {
     scanf(" %[^\n]", song);
