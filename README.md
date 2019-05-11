@@ -138,7 +138,7 @@ int main(void)
 }
 ```
 Kemudian hitung jumlah total lagu yang ada dalam folder FUSE. Kemudian didalam fungsi `int main()` terdapat beberapa fungsi yaitu:
-1. fungsi untuk stop music yang sedang di play. Syntaxnya adalah seperti berikut ini:
+1. Fungsi untuk stop music yang sedang di play. Syntaxnya adalah seperti berikut ini:
 ```
 if (strcmp(inp, "stop") == 0) {
     system("clear");
@@ -152,7 +152,7 @@ if (strcmp(inp, "stop") == 0) {
     }
 }
 ```
-2. fungsi untuk menampilakan semua command list yang ada. Syntaxnya adalah seperti berikut ini:
+2. Fungsi untuk menampilakan semua command list yang ada. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "help") == 0) {
     system("clear");
@@ -178,7 +178,7 @@ else if (strcmp(inp, "help") == 0) {
     printf("------------------------\n");
 }
 ```
-3. fungsi untuk play music yang dipilih
+3. Fungsi untuk play music yang dipilih
 ```
 else if (strcmp(inp, "play") == 0) {
     scanf(" %[^\n]", song);
@@ -238,7 +238,7 @@ else if (strcmp(inp, "play") == 0) {
     }
 }
 ```
-4. fungsi untuk menampilkan list nama lagu yang ada di global atau playlist. Syntaxnya adalah seperti berikut ini:
+4. Fungsi untuk menampilkan list nama lagu yang ada di global atau playlist. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "list") == 0) {
     system("clear");
@@ -280,7 +280,7 @@ else if (strcmp(inp, "list") == 0) {
     }
 }
 ```
-5. fungsi untuk pause music yang sedang di play. Syntaxnya adalah seperti berikut ini:
+5. Fungsi untuk pause music yang sedang di play. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "pause") == 0) {
     system("clear");
@@ -292,7 +292,7 @@ else if (strcmp(inp, "pause") == 0) {
     }
 }
 ```
-6. fungsi untuk memutar music sebelumnya (prev). Syntaxnya adalah seperti berikut ini:
+6. Fungsi untuk memutar music sebelumnya (prev). Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "prev") == 0) {
     system("clear");
@@ -307,7 +307,7 @@ else if (strcmp(inp, "prev") == 0) {
     printf("Playing Previous Song.\n");
 }
 ```
-7. fungsi untuk memutar music setelahnya (next). Syntaxnya adalah seperti berikut ini:
+7. Fungsi untuk memutar music setelahnya (next). Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "next") == 0) {
     system("clear");
@@ -322,7 +322,7 @@ else if (strcmp(inp, "next") == 0) {
     printf("Playing Next Song.\n");
 }
 ```
-8. fungsi untuk melanjutkan music yang di pause (resume). Syntaxnya adalah seperti berikut ini:
+8. Fungsi untuk melanjutkan music yang di pause (resume). Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "resume") == 0) {
     system("clear");
@@ -334,7 +334,7 @@ else if (strcmp(inp, "resume") == 0) {
     }
 }
 ```
-9. fungsi untuk menampilkan semua playlist yang ada. Syntaxnya adalah seperti berikut ini:
+9. Fungsi untuk menampilkan semua playlist yang ada. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "listp") == 0) {
     system("clear");
@@ -350,7 +350,7 @@ else if (strcmp(inp, "listp") == 0) {
     }
 }
 ```
-10. fungsi untuk menambahkan playlist. Syntaxnya adalah seperti berikut ini:
+10. Fungsi untuk menambahkan playlist. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "addp") == 0) {
     char tmpplaylist[1005];
@@ -372,7 +372,7 @@ else if (strcmp(inp, "addp") == 0) {
     }
 }
 ```
-11. fungsi untuk menghapus playlist. Syntaxnya adalah seperti berikut ini:
+11. Fungsi untuk menghapus playlist. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "remp") == 0) {
     char tmpplaylist[1005];
@@ -400,7 +400,7 @@ else if (strcmp(inp, "remp") == 0) {
     }
 }
 ```
-12. fungsi untuk menambahkan lagu kedalam playlist tujuan. Syntaxnya adalah seperti berikut ini:
+12. Fungsi untuk menambahkan lagu kedalam playlist tujuan. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "addsp") == 0) {
     char tmpplaylist[1005];
@@ -473,7 +473,7 @@ else if (strcmp(inp, "addsp") == 0) {
     }
 }
 ```
-13. fungsi untuk menghapus lagu dari playlist tujuan. Syntaxnya adalah seperti berikut ini:
+13. Fungsi untuk menghapus lagu dari playlist tujuan. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "remsp") == 0) {
     char tmpplaylist[1005];
@@ -553,7 +553,7 @@ else if (strcmp(inp, "remsp") == 0) {
     }
 }
 ```
-14. fungsi untuk pindah ke playlist tujuan. Syntaxnya adalah seperti berikut ini:
+14. Fungsi untuk pindah ke playlist tujuan. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "movep") == 0) {
     char tmpplaylist[1005];
@@ -580,7 +580,7 @@ else if (strcmp(inp, "movep") == 0) {
     }
 }
 ```
-15. fungsi untuk kembali ke menu sebelumnya (global). Syntaxnya adalah seperti berikut ini:
+15. Fungsi untuk kembali ke menu sebelumnya (global). Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "back") == 0) {
     system("clear");
@@ -594,7 +594,7 @@ else if (strcmp(inp, "back") == 0) {
     }
 }
 ```
-16. fungsi untuk exit program. Syntaxnya adalah seperti berikut ini:
+16. Fungsi untuk exit program. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "exit") == 0) {
     loading("Exiting...");
