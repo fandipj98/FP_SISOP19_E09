@@ -216,7 +216,7 @@ int main(void)
             printf("| 7. | resume (Resume current song)\n");
             printf("| 8. | listp (List all Playlist)\n");
             printf("| 9. | addp [Playlist Name] (Make New Playlist)\n");
-            printf("| 10. | remp [Playlist Name] (Remove Playlist)\n");
+            printf("| 10.| remp [Playlist Name] (Remove Playlist)\n");
             printf("| 11.| addsp [Playlist Name] press enter, then ([Song Name].mp3 | [Song Number]) (Add Song To Playlist)\n");
             printf("| 12.| remsp [Playlist Name] press enter, then ([Song Name].mp3 | [Song Number]) (Remove Song From Playlist)\n");
             printf("| 13.| movep [Playlist Name] (Move to Playlist)\n");
