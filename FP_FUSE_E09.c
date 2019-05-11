@@ -59,10 +59,6 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		st.st_ino = de->d_ino;
 		st.st_mode = de->d_type << 12;
 		int sz = strlen(de->d_name);
-		printf("%s\n",de->d_name);
-		if(sz > 4 && de->d_name[sz - 1] == '3' && de->d_name[sz - 2] == 'p' && de->d_name[sz - 3] == 'm' && de->d_name[sz - 4] == '.'){
-				
-		}
 		res = (filler(buf, de->d_name, &st, 0));
 			if(res!=0) break;
 	}
