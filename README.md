@@ -309,7 +309,7 @@ int main(void)
     int err = pthread_create(&(t),NULL,&player,NULL); //membuat thread
 }
 ```
-Kemudian hitung jumlah total lagu yang ada dalam folder FUSE. Kemudian didalam fungsi `int main()` terdapat beberapa fungsi yaitu:
+Kemudian hitung jumlah total lagu yang ada dalam folder FUSE. Kemudian didalam fungsi `int main()` terdapat beberapa fungsi yang akan dijalankan setelah mendapatkan inputan string yang sesuai yaitu:
 1. Fungsi untuk stop music yang sedang di play. Syntaxnya adalah seperti berikut ini:
 ```
 if (strcmp(inp, "stop") == 0) {
@@ -324,7 +324,7 @@ if (strcmp(inp, "stop") == 0) {
     }
 }
 ```
-2. Fungsi untuk menampilakan semua command list yang ada. Syntaxnya adalah seperti berikut ini:
+2. Fungsi untuk menampilkan semua command list yang ada. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "help") == 0) {
     system("clear");
@@ -350,7 +350,7 @@ else if (strcmp(inp, "help") == 0) {
     printf("------------------------\n");
 }
 ```
-3. Fungsi untuk play music yang dipilih. Syntaxnya adalah seperti berikut ini:
+3. Fungsi untuk play music yang dipilih. Music akan berjalan terus sampai habis, kemudian akan secara otomatis program mp3 player akan play music selanjutnya. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "play") == 0) {
     scanf(" %[^\n]", song);
@@ -725,7 +725,7 @@ else if (strcmp(inp, "remsp") == 0) {
     }
 }
 ```
-14. Fungsi untuk pindah ke playlist tujuan. Syntaxnya adalah seperti berikut ini:
+14. Fungsi untuk pindah ke playlist tujuan agar dapat menampilkan list lagu dan play lagu yang ada pada playlist yang bersangkutan. Sebelum pindah ke playlist tujuan, maka jika ada lagu yang sedang di play, maka akan distop secara otomatis. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "movep") == 0) {
     char tmpplaylist[1005];
@@ -752,7 +752,7 @@ else if (strcmp(inp, "movep") == 0) {
     }
 }
 ```
-15. Fungsi untuk kembali ke menu sebelumnya (global). Syntaxnya adalah seperti berikut ini:
+15. Fungsi untuk kembali ke menu sebelumnya (global). Sebelum kembali ke menu sebelumnya, maka lagu yang sedang diplay akan di stop. Syntaxnya adalah seperti berikut ini:
 ```
 else if (strcmp(inp, "back") == 0) {
     system("clear");
