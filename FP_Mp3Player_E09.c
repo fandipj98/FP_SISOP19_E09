@@ -337,6 +337,7 @@ int main(void)
                     currentplaylistsongnumber = (currentplaylistsongnumber - 1 + totalplaylistsong[currentplaylistnumber]) % totalplaylistsong[currentplaylistnumber];
                     currentsongnumber = playlist[currentplaylistnumber][currentplaylistsongnumber];
                 }
+                pauseflag = 0;
                 stopflag = 1;
                 playflag = 1;
                 printf("Playing Previous Song.\n");
@@ -352,11 +353,12 @@ int main(void)
                     currentplaylistsongnumber = (currentplaylistsongnumber + 1) % totalplaylistsong[currentplaylistnumber];
                     currentsongnumber = playlist[currentplaylistnumber][currentplaylistsongnumber];
                 }
+                pauseflag = 0;
                 stopflag = 1;
                 playflag = 1;
                 printf("Playing Next Song.\n");
             } else {
-                printf("No currently plying song.\n");
+                printf("No currently playing song.\n");
             }
         } else if (strcmp(inp, "resume") == 0) {
             system("clear");
