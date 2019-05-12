@@ -59,6 +59,10 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		st.st_ino = de->d_ino;
 		st.st_mode = de->d_type << 12;
 		int sz = strlen(de->d_name);
+		printf("%s\n",de->d_name);
+		if(sz > 4 && de->d_name[sz - 1] == '3' && de->d_name[sz - 2] == 'p' && de->d_name[sz - 3] == 'm' && de->d_name[sz - 4] == '.'){
+				
+		}
 		res = (filler(buf, de->d_name, &st, 0));
 			if(res!=0) break;
 	}
@@ -116,7 +120,7 @@ void listdir(const char *name)
             int sz = strlen(entry->d_name);
             if(sz > 4 && entry->d_name[sz - 1] == '3' && entry->d_name[sz - 2] == 'p' && entry->d_name[sz - 3] == 'm' && entry->d_name[sz - 4] == '.'){
                 printf("%s %s\n", name, entry->d_name);
-                char command[1005], pathasal[1005], namafile[1005], pathtujuan[1005];
+                char pathasal[1005], namafile[1005], pathtujuan[1005];
                 int jumlah = 0;
                 if(counter>0){
                     for(int i=0; i<counter; i++){
@@ -150,11 +154,14 @@ void listdir(const char *name)
                 strcat(pathtujuan,"/");
                 strcat(pathtujuan,namafile);
 
-                //printf("COMMAND: %s\n",command);
-
-                sprintf(command, "cp '%s' '%s'", pathasal, pathtujuan);
-
-                system(command);
+                pid_t child_id;
+				child_id = fork();
+				if (child_id == 0) 
+				{
+					// this is child
+					char *argv[4] = {"cp", pathasal, pathtujuan, NULL};
+			    	execv("/bin/cp", argv);
+				}
             }
         }
     }
