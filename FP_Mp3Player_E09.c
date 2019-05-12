@@ -399,23 +399,21 @@ int main(void)
             }
             if (found == -1) {
                 printf("Playlist not found.\n");
+            } else if (found == currentplaylistnumber) {
+                printf("You cant remove current playlist.\n");
             } else {
-                if (found == currentplaylistnumber) {
-                    printf("You cant remove current playlist.\n");
-                } else {
-                    for (int i = found; i < totalplaylist - 1; i++) {
-                        strcpy(pname[i], pname[i + 1]);
-                        for (int j = 0; j < totalplaylistsong[i + 1]; i++) {
-                            playlist[i][j] = playlist[i + 1][j];
-                        }
-                        totalplaylistsong[i] = totalplaylistsong[i + 1];
+                for (int i = found; i < totalplaylist - 1; i++) {
+                    strcpy(pname[i], pname[i + 1]);
+                    for (int j = 0; j < totalplaylistsong[i + 1]; i++) {
+                        playlist[i][j] = playlist[i + 1][j];
                     }
-                    totalplaylistsong[totalplaylist - 1] = 0;
-                    memset(playlist[totalplaylist - 1], 0, sizeof (playlist[totalplaylist - 1]));
-                    memset(pname[totalplaylist - 1], 0, sizeof (pname[totalplaylist - 1]));
-                    totalplaylist--;
-                    printf("Playlist Removed.\n");
+                    totalplaylistsong[i] = totalplaylistsong[i + 1];
                 }
+                totalplaylistsong[totalplaylist - 1] = 0;
+                memset(playlist[totalplaylist - 1], 0, sizeof (playlist[totalplaylist - 1]));
+                memset(pname[totalplaylist - 1], 0, sizeof (pname[totalplaylist - 1]));
+                totalplaylist--;
+                printf("Playlist Removed.\n");
             }
         } else if (strcmp(inp, "addsp") == 0) {
             char tmpplaylist[1005];
