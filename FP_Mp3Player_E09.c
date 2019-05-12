@@ -562,7 +562,7 @@ int main(void)
                     }
                 } else if (isDigit(tmpsong)) {
                     int now = atoi(tmpsong);
-                    if (now <= totalsong) {
+                    if (now <= totalplaylistsong[plidx]) {
                         sgidx = now - 1;
                     }
                 }
