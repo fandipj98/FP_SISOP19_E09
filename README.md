@@ -55,7 +55,7 @@ static struct fuse_operations xmp_oper = {
 	.read		= xmp_read,
 };
 ```
-Kemudian dalam fungsi thread `joinMusic()`, kita memanggil fungsi `listdir()` dengan parameter path `/home/fandipj`. Pada fungsi `listdir()`, kita membaca semua file dan subdirectory dari path yang dipassing dengan fungsi c `opendir()` dan `readdir()`. Jika yang terbaca adalah subfolder, maka akan memanggil fungsi `listdir()` lagi secara rekursi dengan parameter path `path folder/subfolder`. Jika yang terbaca adalah file dan berekstensi .mp3, maka nama filenya akan disimpan kedalam array of string `musiclist`, namun sebelumnya perlu dicek terlebih dahulu apakah nama file .mp3 tersebut sama dengan salah satu file .mp3 yang sudah pernah terbaca dan tersimpan dalam array of string `musiclist`, jika nama filenya sudah pernah ada, maka file tersebut nanti nya sebelum dicopy ke folder `musictemp` yang ada di `/home/user/musictemp`, akan di rename terlebih dahulu dengan format `namafile_jumlahfilekembar.mp3`. Jika nama filenya belum pernah ada, maka file tersebut langsung dicopy ke folder `musictemp` yang ada di `/home/user/musictemp`. Cara copy file .mp3 tersebut menggunakan fungsi `system()` dengan perintah `cp 'path asal' 'path tujuan'`. Thread akan memanggil fungsi `listdir()` tersebut secara rekursi sampai semua file dan subfolder yang berada di `/home/user` sudah terbaca semua. Syntaxnya adalah seperti berikut ini:
+Kemudian dalam fungsi thread `joinMusic()`, kita memanggil fungsi `listdir()` dengan parameter path `/home/fandipj`. Pada fungsi `listdir()`, kita membaca semua file dan subdirectory dari path yang dipassing dengan fungsi c `opendir()` dan `readdir()`. Jika yang terbaca adalah subfolder, maka akan memanggil fungsi `listdir()` lagi secara rekursi dengan parameter path `path folder/subfolder`. Jika yang terbaca adalah file dan berekstensi .mp3, maka nama filenya akan disimpan kedalam array of string `musiclist`, namun sebelumnya perlu dicek terlebih dahulu apakah nama file .mp3 tersebut sama dengan salah satu file .mp3 yang sudah pernah terbaca dan tersimpan dalam array of string `musiclist`, jika nama filenya sudah pernah ada, maka file tersebut nanti nya sebelum dicopy ke folder `musictemp` yang ada di `/home/user/musictemp`, akan di rename terlebih dahulu dengan format `namafile_jumlahfilekembar.mp3`. Jika nama filenya belum pernah ada, maka file tersebut langsung dicopy ke folder `musictemp` yang ada di `/home/user/musictemp`. Cara copy file .mp3 tersebut adalah dengan memfork proses dan menggunakan fungsi `execv()` dengan perintah `cp 'path asal' 'path tujuan'`. Thread akan memanggil fungsi `listdir()` tersebut secara rekursi sampai semua file dan subfolder yang berada di `/home/user` sudah terbaca semua. Syntaxnya adalah seperti berikut ini:
 ```
 char musiclist[1005][1005];
 int counter;
@@ -83,7 +83,7 @@ void listdir(const char *name)
             int sz = strlen(entry->d_name);
             if(sz > 4 && entry->d_name[sz - 1] == '3' && entry->d_name[sz - 2] == 'p' && entry->d_name[sz - 3] == 'm' && entry->d_name[sz - 4] == '.'){
                 printf("%s %s\n", name, entry->d_name);
-                char command[1005], pathasal[1005], namafile[1005], pathtujuan[1005];
+                char pathasal[1005], namafile[1005], pathtujuan[1005];
                 int jumlah = 0;
                 if(counter>0){
                     for(int i=0; i<counter; i++){
@@ -117,11 +117,14 @@ void listdir(const char *name)
                 strcat(pathtujuan,"/");
                 strcat(pathtujuan,namafile);
 
-                //printf("COMMAND: %s\n",command);
-
-                sprintf(command, "cp '%s' '%s'", pathasal, pathtujuan);
-
-                system(command);
+                pid_t child_id;
+				child_id = fork();
+				if (child_id == 0) 
+				{
+					// this is child
+					char *argv[4] = {"cp", pathasal, pathtujuan, NULL};
+			    	execv("/bin/cp", argv);
+				}
             }
         }
     }
