@@ -517,8 +517,8 @@ int main(void)
                 char tmpsong[1005];
                 int localcnt = 0;
                 int cnt;
-                for (int i = 0; i < totalplaylistsong[currentplaylistnumber]; i++) {
-                    int cur = playlist[currentplaylistnumber][i];
+                for (int i = 0; i < totalplaylistsong[plidx]; i++) {
+                    int cur = playlist[plidx][i];
                     cnt = 0;
                     dp = opendir(musicdir);
                     while ((de = readdir(dp)) != NULL) {
