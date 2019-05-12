@@ -272,6 +272,7 @@ int main(void)
                     }
                     if (found) {
                         stopflag = 1;
+                        pauseflag = 0;
                         playflag = 1;
                         printf("Playing A Song.\n");
                         currentsongnumber = zzz;
