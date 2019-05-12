@@ -328,7 +328,7 @@ int main(void)
             }
         } else if (strcmp(inp, "prev") == 0) {
             system("clear");
-            if (currentsongnumber == -1) {
+            if (currentsongnumber != -1) {
                 if (currentplaylistnumber == -1)
                     currentsongnumber = (currentsongnumber - 1 + totalsong) % totalsong;
                 else {
